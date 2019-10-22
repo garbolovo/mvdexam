@@ -1,0 +1,127 @@
+ /* Reset  */
+/** {*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*  box-sizing: border-box;*/
+/*}*/
+
+
+
+body {
+  margin: 0;
+  background: #fffcf9;
+  
+}
+
+#for-question {
+  width:90%;
+  padding: 15px;
+  border-radius: 7px;
+  background: rgb(228, 241, 221);
+  display: none;
+  font-size: 1 rem;
+}
+
+
+
+ol li {
+  background-color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 7px;
+  width: 90%;
+  cursor: pointer;
+}
+
+
+
+.hide {
+  display: none;
+}
+
+#list ol p {
+  color: rgb(179, 75, 61);
+  cursor: pointer;
+  
+}
+
+#list ol li {
+  color: black;
+  cursor: auto;
+}
+
+.container #quizes ul li {
+  display: inline-block;
+  padding: 0 1rem;
+  
+}
+
+.container #quizes ul li a{
+  font-size: 1.53em;
+  text-decoration: none;
+  text-decoration-line: none;
+}
+
+.container #quizes ul {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.correct {
+  background: #87ef84;
+}
+
+
+/* footer */
+#main-footer {
+  text-align: center;
+  color: #bbbbbb;
+  margin: 28rem 0 0 0;
+  background: #444;
+  padding: 20px;
+}
+
+#main-footer p {
+  margin: 0;
+}
+
+/* giveup button */
+#giveup-btn {
+  margin-left: 50px;
+}
+
+/* startBtn width */
+#start-btn {
+  width: 202px;
+}
+
+
+
+/* flag */
+#white {
+  /* width: 100%; */
+  height: 15px;
+  background: white;
+}
+
+#blue {
+  /* width: 100%; */
+  height: 15px;
+  background: blue;
+}
+
+#red {
+  /* width: 100%; */
+  height: 15px;
+  background:rgb(255, 0, 0)
+}
+
+
+#flag {
+  height: 60px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Зачет МВД</title>
+  <link rel="stylesheet" href="./styles/skeleton.css">
+  <link rel="stylesheet" href="./styles/style.css">
+  <style></style>
+</head>
+<body>
+  <div id="flag">
+    <div class="box" id="white"></div>
+    <div class="box" id="blue"></div>
+    <div class="box" id="red"></div>
+  </div>
+
+  <div class="container">
+
+    <div id="quizes">
+      <ul>
+        <li id="pravo"><a href="#">Правовая</a></li>
+        <li id=police><a href="#">О Полиции</a></li>
+        <li id="sluzba"><a href="#">Служба в ОВД</a></li>
+        <li id="npa"><a href="#">НПА</a></li>
+        <li id="ognev"><a href="#">Огневая</a></li>
+        
+      </ul>
+    </div>
+
+  <table>
+    <tr>
+      <td>Вопросов</td>
+      <td>Ответов дано</td>
+      <td>Текущий вопрос</td>
+      <td>Ошибок</td>
+    </tr>
+    <tr>
+      <td id="total-nums-quize-questions">Выберите тему</td>
+      <td id="current-nums-user-answers">otvetov</td>
+      <td id="question-num-at-the-moment">now Question</td>
+      <td id="current-mistakes-nums">nums mistakes</td>
+    </tr>
+  </table>
+
+  <button id="start-btn" class="button button-primary">Выберите тему</button>
+  <button id="giveup-btn" class="button">Сдаюсь !</button>
+
+  <hr>
+
+  <div id="for-question"></div>
+
+  <div id="for-answers">
+    <ol id="list-answers"></ol>
+  </div>
+
+  <hr>
+
+  <div id="list">
+  </div>
+      
+  </div>
+
+  <footer id="main-footer">
+    <p>DCHIC &copy 2019 All Right Reserved  ||  dchicspb@gmail.com</p>
+  </footer>
+<script src="topics/npa.js"></script>
+<script src="topics/ognev.js"></script>
+<script src="topics/police.js"></script>
+<script src="topics/pravo.js"></script>
+<script src="topics/sluzba.js"></script>
+<script src="functions.js"></script>
+<script src="app.js"></script>
+<script src="generator-abtraction.js"></script>
+</body>
+</html>
+
