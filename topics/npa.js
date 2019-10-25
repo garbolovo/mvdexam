@@ -142,7 +142,7 @@ const questionsNpa = [
 
 
 
-]
+];
 
 const correctAnswersNpa = [
   1,//1
@@ -162,4 +162,4 @@ const correctAnswersNpa = [
   3,//15
   1,//16
   2,//17
-]
+];
