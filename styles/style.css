@@ -125,3 +125,7 @@ ol li {
   top: 0;
   z-index: 1;
 }
+
+.selected-lis {
+  background: antiquewhite;
+}

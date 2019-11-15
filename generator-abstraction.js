@@ -50,6 +50,8 @@ startBtn.addEventListener('click', function() {
     domAnswers.innerHTML = '';
     let ans = choiceIterator.next();
 
+    console.log(ans);
+
     for (let i = 0; i < ans.value.length; i++) {
       // lis created
       let lis = document.createElement('li');
@@ -58,18 +60,26 @@ startBtn.addEventListener('click', function() {
 
       // lis colors change
       lis.addEventListener('mouseenter', function () {
-        lis.style = 'background-color: #fcfcfc; border: khaki solid 1px';
+        lis.style = 'border: khaki solid 1px';
       });
 
       lis.addEventListener('mouseleave', function () {
-        lis.style = 'background-color: #ffffff; border: solid 0px';
+        lis.style = 'border: solid 0px';
       });
       // ====================================
 
       // choosing an answer
       lis.addEventListener('click', function () {
 
-        console.log(i);
+        //highliting chosen answer
+        domAnswers.childNodes.forEach((node, ind) => {
+          // console.log(ind)
+          if(i === ind) {
+            node.classList.add('selected-lis')
+          } else {
+            node.classList.remove('selected-lis')
+        }
+        })
 
         // button normal state
         startBtn.textContent = 'Следующий вопрос';
@@ -77,8 +87,8 @@ startBtn.addEventListener('click', function() {
         startBtn.style.background = '#33C3F0';
         // startBtn.style.fontWeight = 'normal';
 
-        lis.style = 'background-color: #fff; border: blue solid 1px';
-       
+        // lis.style = 'background-color: #c4c4c4';
+       // lis.classList.toggle('selected-lis');
         // ?
         userAnswers[currentQuestion] = i + 1;
         
