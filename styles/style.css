@@ -79,6 +79,7 @@ ol li {
 
 /* footer */
 .footer {
+  display: flex;
   padding: 0;
   margin: 0;
   text-align: center;
@@ -88,6 +89,12 @@ ol li {
   font-size: 13px;
   width: 100%;
 
+}
+
+.footer__content {
+  margin: 0 auto;
+  /*flex-direction: column;*/
+  justify-items: center;
 }
 
 .footer__email:hover {
