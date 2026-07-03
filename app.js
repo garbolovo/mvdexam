@@ -8,6 +8,10 @@ const elements = {
   currentQuestion: document.querySelector('#question-num-at-the-moment'),
   mistakes: document.querySelector('#current-mistakes-nums'),
   mistakesList: document.querySelector('#list'),
+  mistakesSection: document.querySelector('#mistakes-section'),
+  progress: document.querySelector('#progress-value'),
+  progressTrack: document.querySelector('.progress-track'),
+  questionLabel: document.querySelector('#question-label'),
   topicLinks: document.querySelectorAll('#quizes a'),
 };
 
@@ -68,26 +72,37 @@ function getMistakes() {
 function updateStats() {
   const topic = getCurrentTopic();
   const answeredCount = state.answers.filter(answer => answer !== undefined).length;
+  const totalQuestions = topic ? topic.questions.length : 0;
+  const progress = totalQuestions ? Math.round((answeredCount / totalQuestions) * 100) : 0;
 
-  elements.totalQuestions.textContent = topic ? topic.questions.length : 'Выберите тему';
+  elements.totalQuestions.textContent = totalQuestions;
   elements.answeredQuestions.textContent = answeredCount;
   elements.currentQuestion.textContent = state.currentIndex + 1;
   elements.mistakes.textContent = getMistakes().length;
+  elements.progress.style.width = `${progress}%`;
+  elements.progressTrack.setAttribute('aria-valuenow', progress);
 }
 
 function renderMistakes() {
   const topic = getCurrentTopic();
+  const mistakes = getMistakes();
   elements.mistakesList.replaceChildren();
+  elements.mistakesSection.hidden = mistakes.length === 0;
 
-  getMistakes().forEach(questionIndex => {
+  mistakes.forEach(questionIndex => {
     const question = topic.questions[questionIndex];
     const { text, answers } = getQuestionData(question);
     const item = document.createElement('ol');
-    const title = document.createElement('p');
+    const title = document.createElement('button');
 
+    title.type = 'button';
+    title.classList.add('mistake-toggle');
     title.textContent = `${questionIndex + 1} - ${text}`;
+    title.setAttribute('aria-expanded', 'false');
     title.addEventListener('click', () => {
-      item.querySelectorAll('li').forEach(answer => answer.classList.toggle('hide'));
+      const isExpanded = title.getAttribute('aria-expanded') === 'true';
+      title.setAttribute('aria-expanded', String(!isExpanded));
+      item.querySelectorAll('li').forEach(answer => answer.classList.toggle('hide', isExpanded));
     });
     item.appendChild(title);
 
@@ -98,6 +113,10 @@ function renderMistakes() {
 
       if (answerIndex + 1 === topic.correctAnswers[questionIndex]) {
         answerItem.classList.add('correct');
+      }
+
+      if (answerIndex + 1 === state.answers[questionIndex]) {
+        answerItem.classList.add('user-wrong');
       }
 
       item.appendChild(answerItem);
@@ -112,6 +131,7 @@ function selectAnswer(answerIndex) {
 
   elements.answers.querySelectorAll('li').forEach((answer, index) => {
     answer.classList.toggle('selected-lis', index === answerIndex);
+    answer.setAttribute('aria-checked', String(index === answerIndex));
   });
 
   elements.startButton.textContent = 'Следующий вопрос';
@@ -125,6 +145,7 @@ function renderQuestion(index) {
   const { text, answers } = getQuestionData(topic.questions[index]);
 
   state.currentIndex = index;
+  elements.questionLabel.textContent = `Вопрос ${index + 1} из ${topic.questions.length}`;
   elements.question.textContent = text;
   elements.question.style.display = 'block';
   elements.answers.replaceChildren();
@@ -132,8 +153,18 @@ function renderQuestion(index) {
   answers.forEach((answer, answerIndex) => {
     const answerItem = document.createElement('li');
     answerItem.textContent = answer;
+    answerItem.classList.add('answer-option');
+    answerItem.setAttribute('role', 'radio');
+    answerItem.setAttribute('tabindex', '0');
+    answerItem.setAttribute('aria-checked', String(state.answers[index] === answerIndex + 1));
     answerItem.classList.toggle('selected-lis', state.answers[index] === answerIndex + 1);
     answerItem.addEventListener('click', () => selectAnswer(answerIndex));
+    answerItem.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectAnswer(answerIndex);
+      }
+    });
     elements.answers.appendChild(answerItem);
   });
 
@@ -152,6 +183,8 @@ function selectTopic(topicId, selectedLink) {
   elements.question.textContent = '';
   elements.answers.replaceChildren();
   elements.mistakesList.replaceChildren();
+  elements.mistakesSection.hidden = true;
+  elements.questionLabel.textContent = 'Нажмите «Начать зачет»';
   elements.startButton.disabled = false;
   elements.startButton.textContent = 'Начать зачет';
   elements.startButton.classList.remove('quiz-warning');
@@ -195,6 +228,8 @@ function resetQuiz() {
   elements.question.textContent = '';
   elements.answers.replaceChildren();
   elements.mistakesList.replaceChildren();
+  elements.mistakesSection.hidden = true;
+  elements.questionLabel.textContent = 'Выберите тему, чтобы начать';
   elements.startButton.disabled = true;
   elements.startButton.textContent = 'Выберите тему';
   elements.startButton.classList.remove('quiz-warning');

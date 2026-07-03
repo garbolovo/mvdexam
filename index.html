@@ -3,74 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#f7f8fa">
   <title>Зачет МВД</title>
   <link rel="stylesheet" href="./styles/skeleton.css">
   <link rel="stylesheet" href="./styles/style.css">
-  <style></style>
 </head>
 <body class="page">
-  <div id="flag">
-    <div class="box" id="white"></div>
-    <div class="box" id="blue"></div>
-    <div class="box" id="red"></div>
+  <div class="flag-line" aria-hidden="true">
+    <span class="flag-line__white"></span>
+    <span class="flag-line__blue"></span>
+    <span class="flag-line__red"></span>
   </div>
 
-  <div class="container">
+  <header class="app-header">
+    <div class="container app-header__inner">
+      <div>
+        <p class="app-header__eyebrow">Подготовка к аттестации</p>
+        <h1>Зачет МВД</h1>
+      </div>
+      <button id="giveup-btn" class="button button-secondary" type="button">Сбросить тест</button>
+    </div>
+  </header>
 
-    <div id="quizes">
+  <main class="container app-main">
+    <nav id="quizes" class="topics" aria-label="Темы зачета">
       <ul>
         <li id="pravo"><a href="#">Правовая</a></li>
-        <li id="police"><a href="#">О Полиции</a></li>
+        <li id="police"><a href="#">О полиции</a></li>
         <li id="sluzba"><a href="#">Служба в ОВД</a></li>
         <li id="npa"><a href="#">НПА</a></li>
         <li id="ognev"><a href="#">Огневая</a></li>
-        
       </ul>
-    </div>
+    </nav>
 
-  <table>
-    <tr>
-      <td>Вопросов</td>
-      <td>Ответов дано</td>
-      <td>Текущий вопрос</td>
-      <td>Ошибок</td>
-    </tr>
-    <tr>
-      <td id="total-nums-quize-questions">Выберите тему</td>
-      <td id="current-nums-user-answers">otvetov</td>
-      <td id="question-num-at-the-moment">now Question</td>
-      <td id="current-mistakes-nums">nums mistakes</td>
-    </tr>
-  </table>
+    <section class="progress-panel" aria-label="Прогресс зачета">
+      <div class="progress-panel__summary">
+        <div>
+          <span class="stat-label">Текущий вопрос</span>
+          <strong><span id="question-num-at-the-moment">0</span> из <span id="total-nums-quize-questions">0</span></strong>
+        </div>
+        <div>
+          <span class="stat-label">Ответов дано</span>
+          <strong id="current-nums-user-answers">0</strong>
+        </div>
+        <div>
+          <span class="stat-label">Ошибок</span>
+          <strong id="current-mistakes-nums">0</strong>
+        </div>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Выполнение теста" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="progress-value"></span>
+      </div>
+    </section>
 
-  <button id="start-btn" class="button button-primary" disabled>Выберите тему</button>
-  <button id="giveup-btn" class="button">Сдаюсь !</button>
+    <section class="quiz-area" aria-live="polite">
+      <p id="question-label" class="question-label">Выберите тему, чтобы начать</p>
+      <h2 id="for-question"></h2>
+      <div id="for-answers">
+        <ol id="list-answers" role="radiogroup" aria-label="Варианты ответа"></ol>
+      </div>
+      <div class="quiz-actions">
+        <button id="start-btn" class="button button-primary" type="button" disabled>Выберите тему</button>
+      </div>
+    </section>
 
-  <hr>
-
-  <div id="for-question"></div>
-
-  <div id="for-answers">
-    <ol id="list-answers"></ol>
-  </div>
-
-  <hr>
-
-  <div id="list">
-  </div>
-      
-  </div>
+    <section id="mistakes-section" class="mistakes-section" hidden>
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">Работа над ошибками</p>
+        <h2>Неверные ответы</h2>
+      </div>
+      <div id="list"></div>
+    </section>
+  </main>
 
   <footer class="footer">
-    <p class="footer__content">dchic &copy 2025 All Right Reserved  ||  <span class="footer__email">garbolovo78@gmail.com</span></p>
+    <p class="footer__content">dchic &copy; 2026 · garbolovo78@gmail.com</p>
   </footer>
-<script src="topics/npa.js"></script>
-<script src="topics/ognev.js"></script>
-<script src="topics/police.js"></script>
-<script src="topics/pravo.js"></script>
-<script src="topics/sluzba.js"></script>
-<script src="app.js"></script>
+
+  <script src="topics/npa.js"></script>
+  <script src="topics/ognev.js"></script>
+  <script src="topics/police.js"></script>
+  <script src="topics/pravo.js"></script>
+  <script src="topics/sluzba.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
-
