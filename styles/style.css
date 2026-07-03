@@ -67,6 +67,13 @@ ol li {
   text-decoration-line: none;
 }
 
+.container #quizes ul li a.topic-active {
+  background: #33c3f0;
+  border-radius: 5px;
+  color: #fff;
+  padding: 3px 8px;
+}
+
 .container #quizes ul {
   margin-bottom: 10px;
   margin-top: 10px;
@@ -114,6 +121,12 @@ ol li {
 /* startBtn width */
 #start-btn {
   width: 202px;
+}
+
+#start-btn.quiz-warning {
+  background: pink;
+  border: none;
+  color: #555;
 }
 
 

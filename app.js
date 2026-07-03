@@ -1,170 +1,214 @@
+const elements = {
+  question: document.querySelector('#for-question'),
+  answers: document.querySelector('#list-answers'),
+  startButton: document.querySelector('#start-btn'),
+  resetButton: document.querySelector('#giveup-btn'),
+  totalQuestions: document.querySelector('#total-nums-quize-questions'),
+  answeredQuestions: document.querySelector('#current-nums-user-answers'),
+  currentQuestion: document.querySelector('#question-num-at-the-moment'),
+  mistakes: document.querySelector('#current-mistakes-nums'),
+  mistakesList: document.querySelector('#list'),
+  topicLinks: document.querySelectorAll('#quizes a'),
+};
 
+const topics = {
+  pravo: {
+    questions: questionsPravo,
+    correctAnswers: correctAnswersPravo,
+  },
+  police: {
+    questions: questionsPolice,
+    correctAnswers: correctAnswersPolice,
+  },
+  sluzba: {
+    questions: questionsSluzba,
+    correctAnswers: correctAnswersSluzba,
+  },
+  npa: {
+    questions: questionsNpa,
+    correctAnswers: correctAnswersNpa,
+  },
+  ognev: {
+    questions: questionsOgnev,
+    correctAnswers: correctAnswersOgnev,
+  },
+};
 
-let domQuestion = document.querySelector('#for-question');
-let domAnswers = document.querySelector('#list-answers');
-let startBtn = document.querySelector('#start-btn');
-let giveUpBtn = document.querySelector('#giveup-btn');
+const state = {
+  topicId: null,
+  currentIndex: -1,
+  answers: [],
+};
 
+function getQuestionData(question) {
+  const [text, ...answers] = Object.values(question);
+  return { text, answers };
+}
 
+function getCurrentTopic() {
+  return topics[state.topicId];
+}
 
-// results dom elements
-let result = document.getElementById('result'); // total result div
-let totalNumsQuizeQuestionsEl = document.querySelector('#total-nums-quize-questions'); //1
-let currentNumsUserAnswersEl = document.querySelector('#current-nums-user-answers'); //2
-let questionNumAtTheMomentEl = document.querySelector('#question-num-at-the-moment'); //3
-let currentMistakesNumsEl = document.querySelector('#current-mistakes-nums'); //4
+function getMistakes() {
+  const topic = getCurrentTopic();
 
-let list = document.querySelector('#list');
-let listOls = document.querySelectorAll('#list>ol');
+  if (!topic) {
+    return [];
+  }
 
+  return state.answers.reduce((mistakes, answer, index) => {
+    if (answer !== undefined && answer !== topic.correctAnswers[index]) {
+      mistakes.push(index);
+    }
 
-let currentQuestion = 0;
+    return mistakes;
+  }, []);
+}
 
-// ===================== //
-// DOM type of QUIZE
-let pravo = document.querySelector('.container #quizes #pravo');
-let police = document.querySelector('.container #quizes #police');
-let sluzba = document.querySelector('.container #quizes #sluzba');
-let npa = document.querySelector('.container #quizes #npa');
-let ognev = document.querySelector('.container #quizes #ognev');
+function updateStats() {
+  const topic = getCurrentTopic();
+  const answeredCount = state.answers.filter(answer => answer !== undefined).length;
 
-pravo.addEventListener('click', funPravo);
-police.addEventListener('click', funPolice)
-sluzba.addEventListener('click', funSluzba)
-npa.addEventListener('click', funNpa)
-ognev.addEventListener('click', funOgnev)
+  elements.totalQuestions.textContent = topic ? topic.questions.length : 'Выберите тему';
+  elements.answeredQuestions.textContent = answeredCount;
+  elements.currentQuestion.textContent = state.currentIndex + 1;
+  elements.mistakes.textContent = getMistakes().length;
+}
 
+function renderMistakes() {
+  const topic = getCurrentTopic();
+  elements.mistakesList.replaceChildren();
 
+  getMistakes().forEach(questionIndex => {
+    const question = topic.questions[questionIndex];
+    const { text, answers } = getQuestionData(question);
+    const item = document.createElement('ol');
+    const title = document.createElement('p');
 
-//===================================
-// bindings from pravo.js (vars for all data)
-let userAnswers = [];
-let wrongAnswers = [];
-let mistakesCounter = 0;
-// ==================================
+    title.textContent = `${questionIndex + 1} - ${text}`;
+    title.addEventListener('click', () => {
+      item.querySelectorAll('li').forEach(answer => answer.classList.toggle('hide'));
+    });
+    item.appendChild(title);
 
-// totalNumsQuizeQuestionsEl.textContent = questions.length;
-// totalNumsQuizeQuestionsEl.textContent = quizLenght(questions);
+    answers.forEach((answer, answerIndex) => {
+      const answerItem = document.createElement('li');
+      answerItem.textContent = answer;
+      answerItem.classList.add('hide');
 
-currentNumsUserAnswersEl.textContent = userAnswers.filter( answer => answer).length;
-questionNumAtTheMomentEl.textContent = currentQuestion;
-currentMistakesNumsEl.textContent = 0;
+      if (answerIndex + 1 === topic.correctAnswers[questionIndex]) {
+        answerItem.classList.add('correct');
+      }
 
+      item.appendChild(answerItem);
+    });
 
+    elements.mistakesList.appendChild(item);
+  });
+}
 
+function selectAnswer(answerIndex) {
+  state.answers[state.currentIndex] = answerIndex + 1;
 
-// ========================================================== //
+  elements.answers.querySelectorAll('li').forEach((answer, index) => {
+    answer.classList.toggle('selected-lis', index === answerIndex);
+  });
 
+  elements.startButton.textContent = 'Следующий вопрос';
+  elements.startButton.classList.remove('quiz-warning');
+  updateStats();
+  renderMistakes();
+}
 
-// // generator 1 definition (for question)
-// function* QuestionGenerator() {
-//   for(let i = 0; i < questions.length; i++) {
-//     currentQuestion = i + 1;
-//     yield questions[i][`question${i + 1}`];
-//   }
-// }
+function renderQuestion(index) {
+  const topic = getCurrentTopic();
+  const { text, answers } = getQuestionData(topic.questions[index]);
 
-// // iterator 1 definition
-// const questionIterator = QuestionGenerator();
+  state.currentIndex = index;
+  elements.question.textContent = text;
+  elements.question.style.display = 'block';
+  elements.answers.replaceChildren();
 
-// // generator 2 definition (for CHOICES)
-// function* ChoicesGenerator() {
-//   for(let i = 0; i < questions.length; i++) {
-//     let values = Object.keys(questions[i]).map(key => questions[i][key]);
-//     values.shift();
-//     yield values;
-//   }
-// }
+  answers.forEach((answer, answerIndex) => {
+    const answerItem = document.createElement('li');
+    answerItem.textContent = answer;
+    answerItem.classList.toggle('selected-lis', state.answers[index] === answerIndex + 1);
+    answerItem.addEventListener('click', () => selectAnswer(answerIndex));
+    elements.answers.appendChild(answerItem);
+  });
 
-// // iterator 2 definition
-// const choiceIterator = ChoicesGenerator();
+  elements.startButton.textContent = 'Ответьте на вопрос';
+  elements.startButton.classList.remove('quiz-warning');
+  updateStats();
+}
 
-// // MAIN GENERATOR   
-// startBtn.addEventListener('click', function() {
+function selectTopic(topicId, selectedLink) {
+  state.topicId = topicId;
+  state.currentIndex = -1;
+  state.answers = [];
 
-//   if (userAnswers.filter( answer => answer).length === currentQuestion) {
-//     startBtn.textContent = 'NEXT QUESTION';
-//     startBtn.style.color = '#555';
+  elements.topicLinks.forEach(link => link.classList.toggle('topic-active', link === selectedLink));
+  elements.question.style.display = 'none';
+  elements.question.textContent = '';
+  elements.answers.replaceChildren();
+  elements.mistakesList.replaceChildren();
+  elements.startButton.disabled = false;
+  elements.startButton.textContent = 'Начать зачет';
+  elements.startButton.classList.remove('quiz-warning');
+  updateStats();
+}
 
-//     // question
-//     let qs = questionIterator.next();
-//     if (qs.done) {
-//       console.log('No more questions');
-//     }
-//     domQuestion.setAttribute("style","display:block");
-//     domQuestion.textContent = qs.value;
-//     questionNumAtTheMomentEl.textContent = currentQuestion;
+function handleNextQuestion() {
+  const topic = getCurrentTopic();
 
-//     // answers  (choices)
-//     domAnswers.innerHTML = '';
-//     let ans = choiceIterator.next();
+  if (!topic) {
+    return;
+  }
 
-//     for (let i = 0; i < ans.value.length; i++) {
-//       // lis created
-//       let lis = document.createElement('li');
-//       domAnswers.appendChild(lis);
-//       lis.textContent = ans.value[i];
+  if (state.currentIndex === -1) {
+    renderQuestion(0);
+    return;
+  }
 
-//       // lis colors change
-//       lis.addEventListener('mouseenter', function () {
-//         lis.style = 'background-color: #fcfcfc; border: khaki solid 1px';
-//       });
+  if (state.answers[state.currentIndex] === undefined) {
+    elements.startButton.textContent = 'Ответьте на вопрос';
+    elements.startButton.classList.add('quiz-warning');
+    return;
+  }
 
-//       lis.addEventListener('mouseleave', function () {
-//         lis.style = 'background-color: #ffffff; border: solid 0px';
-//       });
-//       // ====================================
+  if (state.currentIndex === topic.questions.length - 1) {
+    elements.startButton.textContent = 'Зачет завершен';
+    elements.startButton.disabled = true;
+    return;
+  }
 
-//       // choosing an answer
-//       lis.addEventListener('click', function () {
+  renderQuestion(state.currentIndex + 1);
+}
 
-//         console.log(i);
+function resetQuiz() {
+  state.topicId = null;
+  state.currentIndex = -1;
+  state.answers = [];
 
-//         // button normal state
-//         startBtn.textContent = 'NEXT QUESTION';
-//         startBtn.style.color = '#555';
-//         startBtn.style.border = '1px solid #bbb';
-//         // startBtn.style.fontWeight = 'normal';
+  elements.topicLinks.forEach(link => link.classList.remove('topic-active'));
+  elements.question.style.display = 'none';
+  elements.question.textContent = '';
+  elements.answers.replaceChildren();
+  elements.mistakesList.replaceChildren();
+  elements.startButton.disabled = true;
+  elements.startButton.textContent = 'Выберите тему';
+  elements.startButton.classList.remove('quiz-warning');
+  updateStats();
+}
 
-//         lis.style = 'background-color: #fff; border: blue solid 1px';
-       
-//         // ?
-//         userAnswers[currentQuestion] = i + 1;
-        
-//         // обновление счетчика текущего вопроса
-//         currentNumsUserAnswersEl.textContent = userAnswers.filter( answer => answer).length;
-//       })
+elements.topicLinks.forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    selectTopic(link.parentElement.id, link);
+  });
+});
 
+elements.startButton.addEventListener('click', handleNextQuestion);
+elements.resetButton.addEventListener('click', resetQuiz);
 
-//       wrongAnswers = []; // Wrong Answers Nums
-//       wrongQuestionsName = []; // Wrong Questions NAME
-//       wrongQuestions = []; // Wrong Questions OBJ
-
-
-//       userAnswers.filter(answer => answer).forEach((a, i) => {
-//         if(a !== correctAnswers[i]) {
-//           wrongAnswers.push(i); // wrong answers NUMs array building
-//           wrongQuestions.push(questions[i]); // wrongQuestions building
-//         }
-//       });
-      
-//       currentMistakesNumsEl.textContent = wrongAnswers.length;
-      
-//     }
-
-//     gettingList(wrongQuestions, list)
-
-
-    
-
-//   } else {
-//     // button warning
-//     startBtn.textContent = 'ANSWER THE QUESTION';
-//     startBtn.style = 'color:#555; border: 1px solid red;';
-
-//   }
-
-// });
-
-
-
+resetQuiz();
