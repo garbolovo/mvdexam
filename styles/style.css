@@ -27,9 +27,14 @@ body.page {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .container {
-  width: min(100% - 32px, 960px);
-  max-width: none;
+  width: calc(100% - 32px);
+  max-width: 960px;
   margin: 0 auto;
   padding: 0;
 }
@@ -202,9 +207,10 @@ body.page {
   max-width: 840px;
   margin: 0 0 28px;
   font-size: 2.4rem;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.4;
   letter-spacing: 0;
+  overflow-wrap: break-word;
 }
 
 #list-answers {
@@ -345,10 +351,11 @@ body.page {
   background: transparent;
   color: var(--danger);
   font-size: 1.5rem;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.45;
   text-align: left;
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .mistake-toggle::after {
@@ -400,7 +407,7 @@ body.page {
 
 @media (max-width: 640px) {
   .container {
-    width: min(100% - 24px, 960px);
+    width: calc(100% - 24px);
   }
 
   .app-header__inner {
