@@ -39,22 +39,6 @@ button {
   padding: 0;
 }
 
-.flag-line {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: grid;
-  grid-template-rows: repeat(3, 3px);
-}
-
-.flag-line span {
-  display: block;
-}
-
-.flag-line__white { background: #fff; }
-.flag-line__blue { background: #1769aa; }
-.flag-line__red { background: #c84141; }
-
 .app-header {
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.96);
