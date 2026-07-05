@@ -41,6 +41,7 @@ const topics = {
 const state = {
   topicId: null,
   currentIndex: -1,
+  pendingAnswer: null,
   answers: [],
 };
 
@@ -127,7 +128,7 @@ function renderMistakes() {
 }
 
 function selectAnswer(answerIndex) {
-  state.answers[state.currentIndex] = answerIndex + 1;
+  state.pendingAnswer = answerIndex + 1;
 
   elements.answers.querySelectorAll('li').forEach((answer, index) => {
     answer.classList.toggle('selected-lis', index === answerIndex);
@@ -136,8 +137,6 @@ function selectAnswer(answerIndex) {
 
   elements.startButton.textContent = 'Следующий вопрос';
   elements.startButton.classList.remove('quiz-warning');
-  updateStats();
-  renderMistakes();
 }
 
 function renderQuestion(index) {
@@ -145,6 +144,7 @@ function renderQuestion(index) {
   const { text, answers } = getQuestionData(topic.questions[index]);
 
   state.currentIndex = index;
+  state.pendingAnswer = null;
   elements.questionLabel.textContent = `Вопрос ${index + 1} из ${topic.questions.length}`;
   elements.question.textContent = text;
   elements.question.style.display = 'block';
@@ -156,8 +156,7 @@ function renderQuestion(index) {
     answerItem.classList.add('answer-option');
     answerItem.setAttribute('role', 'radio');
     answerItem.setAttribute('tabindex', '0');
-    answerItem.setAttribute('aria-checked', String(state.answers[index] === answerIndex + 1));
-    answerItem.classList.toggle('selected-lis', state.answers[index] === answerIndex + 1);
+    answerItem.setAttribute('aria-checked', 'false');
     answerItem.addEventListener('click', () => selectAnswer(answerIndex));
     answerItem.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -176,6 +175,7 @@ function renderQuestion(index) {
 function selectTopic(topicId, selectedLink) {
   state.topicId = topicId;
   state.currentIndex = -1;
+  state.pendingAnswer = null;
   state.answers = [];
 
   elements.topicLinks.forEach(link => link.classList.toggle('topic-active', link === selectedLink));
@@ -203,11 +203,15 @@ function handleNextQuestion() {
     return;
   }
 
-  if (state.answers[state.currentIndex] === undefined) {
+  if (state.pendingAnswer === null) {
     elements.startButton.textContent = 'Ответьте на вопрос';
     elements.startButton.classList.add('quiz-warning');
     return;
   }
+
+  state.answers[state.currentIndex] = state.pendingAnswer;
+  updateStats();
+  renderMistakes();
 
   if (state.currentIndex === topic.questions.length - 1) {
     elements.startButton.textContent = 'Зачет завершен';
@@ -221,6 +225,7 @@ function handleNextQuestion() {
 function resetQuiz() {
   state.topicId = null;
   state.currentIndex = -1;
+  state.pendingAnswer = null;
   state.answers = [];
 
   elements.topicLinks.forEach(link => link.classList.remove('topic-active'));
